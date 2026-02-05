@@ -1,0 +1,67 @@
+<h1><%= @post.title %></h1>
+
+<p class="meta">
+  by <%= @post.user.email %> ·
+  <%= time_ago_in_words(@post.created_at) %> ago
+</p>
+
+<div class="post-content">
+  <%= simple_format(@post.content) %>
+</div>
+
+<% if user_signed_in? && @post.user == current_user %>
+  <%= link_to "Edit", edit_post_path(@post), class: "button" %>
+  <%= link_to "Delete",
+              @post,
+              data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
+              class: "button danger" %>
+<% end %>
+
+<hr>
+
+<div class="likes">
+  ❤️ <%= @post.likes.count %> likes
+
+  <% if user_signed_in? %>
+    <% if @post.liked_by?(current_user) %>
+      <%= button_to "Unlike",
+                    post_like_path(@post, @post.likes.find_by(user: current_user)),
+                    method: :delete %>
+    <% else %>
+      <%= button_to "Like",
+                    post_likes_path(@post),
+                    method: :post %>
+    <% end %>
+  <% else %>
+    <p><em>Login to like this post</em></p>
+  <% end %>
+</div>
+
+<hr>
+
+<h3>Comments</h3>
+
+<% @post.comments.each do |comment| %>
+  <div class="comment">
+    <strong><%= comment.user.email %></strong>
+    <p><%= comment.content %></p>
+
+    <% if user_signed_in? && comment.user == current_user %>
+      <%= button_to "Delete",
+                    post_comment_path(@post, comment),
+                    method: :delete,
+                    class: "danger" %>
+    <% end %>
+  </div>
+<% end %>
+
+<% if user_signed_in? %>
+  <h4>Add a comment</h4>
+
+  <%= form_with(model: [@post, Comment.new]) do |form| %>
+    <%= form.text_area :content, rows: 3 %>
+    <%= form.submit "Post Comment" %>
+  <% end %>
+<% else %>
+  <p><em>Login to comment</em></p>
+<% end %>
