@@ -5,6 +5,12 @@
   <%= time_ago_in_words(@post.created_at) %> ago
 </p>
 
+<% if @post.image.attached? %>
+  <div class="post-image">
+    <%= image_tag @post.image, alt: @post.title %>
+  </div>
+<% end %>
+
 <div class="post-content">
   <%= simple_format(@post.content) %>
 </div>

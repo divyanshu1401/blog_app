@@ -11,7 +11,9 @@
   <body>
     <nav class="navbar">
       <div class="nav-inner">
-        <h2 class="logo">BlogApp</h2>
+        <%= link_to root_path do %>
+          <h2 class="logo">BlogApp</h2>
+        <% end %>
 
         <div class="nav-links">
           <% if user_signed_in? %>

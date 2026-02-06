@@ -6,6 +6,14 @@
       <%= link_to post.title, post %>
     </h2>
 
+    <% if post.image.attached? %>
+      <div class="post-card-image">
+        <%= link_to post do %>
+          <%= image_tag post.image, alt: post.title %>
+        <% end %>
+      </div>
+    <% end %>
+
     <p class="meta">
       by <%= post.user.email %> ·
       <%= time_ago_in_words(post.created_at) %> ago
