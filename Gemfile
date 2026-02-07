@@ -37,6 +37,7 @@ gem "bootsnap", require: false
 gem "devise"
 gem "aws-sdk-s3"
 gem 'redis', '~> 5.0'
+gem 'connection_pool', '~> 2.4'
 gem 'redis-actionpack'
 
 group :development, :test do
