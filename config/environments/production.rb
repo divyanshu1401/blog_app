@@ -80,12 +80,12 @@ Rails.application.configure do
     }
   }
 
-  config.session_store :redis_store,
-  servers: "rediss://blog-app-cache-k0rwfx.serverless.aps1.cache.amazonaws.com:6379",
-  expire_after: 90.minutes,
-  key: '_blog_app_session',
-  threadsafe: true,
-  signed: true
+  # config.session_store :redis_store,
+  # servers: "rediss://blog-app-cache-k0rwfx.serverless.aps1.cache.amazonaws.com:6379",
+  # expire_after: 90.minutes,
+  # key: '_blog_app_session',
+  # threadsafe: true,
+  # signed: true
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter = :resque
