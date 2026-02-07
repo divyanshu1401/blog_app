@@ -1,10 +1,15 @@
 class PostsController < ApplicationController
   before_action :set_post, only: %i[ show edit update destroy ]
+  before_action :load_post_with_associations, only: [:show]
   before_action :authenticate_user!, except: [:index, :show]
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.all
+    @posts = Rails.cache.fetch('posts_index', expires_in: 5.minutes) do
+      Post.includes(:user, image_attachment: :blob)
+          .order(created_at: :desc)
+          .to_a
+    end
   end
 
   # GET /posts/1 or /posts/1.json
@@ -26,6 +31,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if @post.save
+        Rails.cache.delete('posts_index')
         format.html { redirect_to @post, notice: "Post was successfully created." }
         format.json { render :show, status: :created, location: @post }
       else
@@ -39,6 +45,8 @@ class PostsController < ApplicationController
   def update
     respond_to do |format|
       if @post.update(post_params)
+        Rails.cache.delete('posts_index')
+        Rails.cache.delete("post_#{@post.id}")
         format.html { redirect_to @post, notice: "Post was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @post }
       else
@@ -51,6 +59,8 @@ class PostsController < ApplicationController
   # DELETE /posts/1 or /posts/1.json
   def destroy
     @post.destroy!
+    Rails.cache.delete('posts_index')
+    Rails.cache.delete("post_#{@post.id}")
 
     respond_to do |format|
       format.html { redirect_to posts_path, notice: "Post was successfully destroyed.", status: :see_other }
@@ -59,9 +69,18 @@ class PostsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    
     def set_post
+      # Simple find for edit/update/destroy
       @post = Post.find(params[:id])
+    end
+
+    def load_post_with_associations
+      # Cache with all associations only for show action
+      @post = Rails.cache.fetch("post_#{params[:id]}", expires_in: 10.minutes) do
+        Post.includes(:user, { comments: :user }, :likes, { image_attachment: :blob })
+          .find(params[:id])
+      end
     end
 
     # Only allow a list of trusted parameters through.

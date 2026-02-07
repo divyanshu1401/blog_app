@@ -7,6 +7,7 @@ class CommentsController < ApplicationController
     comment.user = current_user
 
     if comment.save
+      Rails.cache.delete("post_#{post.id}")
       redirect_to post
     else
       redirect_to post, alert: "Comment could not be saved"
@@ -18,6 +19,7 @@ class CommentsController < ApplicationController
     post = comment.post
 
     comment.destroy if comment.user == current_user
+    Rails.cache.delete("post_#{post.id}")
     redirect_to post
   end
 
