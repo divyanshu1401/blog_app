@@ -72,11 +72,20 @@ test:
 # the values provided in this file. Alternatively, you can specify a connection
 # URL environment variable explicitly:
 #
+# production:
+#  adapter: postgresql
+#  encoding: unicode 
+#  pool: 5
+#  database: <%= ENV["DB_NAME"] %>
+#  username: <%= ENV["DB_USER"] %>
+#  password: <%= ENV["DB_PASSWORD"] %>
+#  host: <%= ENV["DB_HOST"] %>
+
+
 production:
- adapter: postgresql
- encoding: unicode 
- pool: 5
- database: <%= ENV["DB_NAME"] %>
- username: <%= ENV["DB_USER"] %>
- password: <%= ENV["DB_PASSWORD"] %>
- host: <%= ENV["DB_HOST"] %>
+  <<: *default
+  database: blog_app_production
+  username: <%= SecretsManager.get_secret('blog-app/production/database')['username'] rescue 'blog_user' %>
+  password: <%= SecretsManager.get_secret('blog-app/production/database')['password'] rescue ENV['DB_PASSWORD'] %>
+  host: <%= SecretsManager.get_secret('blog-app/production/database')['host'] rescue ENV['DB_HOST'] %>
+  port: <%= SecretsManager.get_secret('blog-app/production/database')['port'] rescue 5432 %>
