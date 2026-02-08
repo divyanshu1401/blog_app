@@ -80,7 +80,7 @@ Rails.application.configure do
     }
   }
 
-  config.session_store :redis_store,
+  config.session_store :cache_store,
   servers: "rediss://blog-app-cache-k0rwfx.serverless.aps1.cache.amazonaws.com:6379",
   expire_after: 90.minutes,
   key: '_blog_app_session',
