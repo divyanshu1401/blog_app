@@ -69,8 +69,9 @@ Rails.application.configure do
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
+  redis_url = SecretsManager.get_secret('blog-app/production/cache')['url']
   config.cache_store = :redis_cache_store, {
-    url: "rediss://blog-app-cache-k0rwfx.serverless.aps1.cache.amazonaws.com:6379",
+    url: redis_url,
     connect_timeout: 30,
     read_timeout: 0.2,
     write_timeout: 0.2,
@@ -81,7 +82,7 @@ Rails.application.configure do
   }
 
   config.session_store :cache_store,
-  servers: "rediss://blog-app-cache-k0rwfx.serverless.aps1.cache.amazonaws.com:6379",
+  servers: redis_url,
   expire_after: 90.minutes,
   key: '_blog_app_session',
   threadsafe: true,
