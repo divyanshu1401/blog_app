@@ -13,7 +13,6 @@ amazon:
   secret_access_key: <%= s3_secrets['secret_access_key']%>
   region: <%= s3_secrets['region']%>
   bucket: <%= s3_secrets['bucket']%>
-  prefix: uploads/
 
 
 
