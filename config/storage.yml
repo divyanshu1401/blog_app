@@ -14,7 +14,7 @@ amazon:
   region: <%= s3_secrets['region']%>
   bucket: <%= s3_secrets['bucket']%>
   upload:
-    prefix: uploads
+    prefix: uploads/
 
 
 
