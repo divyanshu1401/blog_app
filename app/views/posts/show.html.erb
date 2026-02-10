@@ -17,9 +17,10 @@
 
 <% if user_signed_in? && @post.user == current_user %>
   <%= link_to "Edit", edit_post_path(@post), class: "button" %>
-  <%= link_to "Delete",
-              @post,
-              data: { turbo_method: :delete, turbo_confirm: "Are you sure?" },
+  <%= button_to "Delete", 
+              @post, 
+              method: :delete, 
+              onclick: "return confirm('Are you sure?')", 
               class: "button danger" %>
 <% end %>
 
