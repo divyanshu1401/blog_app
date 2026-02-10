@@ -12,7 +12,8 @@ module PostsHelper
         return ActiveStorage::Blob.service.url(
           thumb_key, 
           expires_in: 1.hour, 
-          disposition: :inline, 
+          disposition: :inline,
+          filename: post.image.blob.filename,
           content_type: post.image.content_type
         )
       end
