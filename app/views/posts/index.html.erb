@@ -6,13 +6,16 @@
       <%= link_to post.title, post %>
     </h2>
 
-    <% if post.image.attached? %>
-      <div class="post-card-image">
-        <%= link_to post do %>
-          <%= image_tag post.image, alt: post.title %>
-        <% end %>
-      </div>
-    <% end %>
+  <% if post.image.attached? %>
+    <div class="post-card-image">
+      <%= link_to post do %>
+        <%= image_tag post_preview_image(post), 
+                      alt: post.title, 
+                      class: "compressed-thumb", 
+                      style: "width: 300px; height: 300px; object-fit: cover;" %>
+      <% end %>
+    </div>
+  <% end %>
 
     <p class="meta">
       by <%= post.user.email %> ·
