@@ -37,7 +37,7 @@ gem "bootsnap", require: false
 gem "devise"
 gem "aws-sdk-s3"
 gem 'redis', '~> 5.0'
-gem 'connection_pool', '~> 2.4'
+gem 'connection_pool', '~> 3.0'
 gem 'redis-actionpack'
 gem 'aws-sdk-secretsmanager'
 gem 'sidekiq'
