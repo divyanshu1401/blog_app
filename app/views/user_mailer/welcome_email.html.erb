@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Welcome to the Blog%>!</h1>
+    <p>
+      You have successfully signed up. Your username is: <%= @user.email %>.<br>
+    </p>
+    <p>
+      To login to the site, just follow this link: <%= link_to "Login Now", @url %>
+    </p>
+    <p>Thanks for joining!</p>
+  </body>
+</html>

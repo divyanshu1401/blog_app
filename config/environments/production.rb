@@ -95,6 +95,21 @@ Rails.application.configure do
   # Disable caching for Action Mailer templates even if Action Controller
   # caching is enabled.
   config.action_mailer.perform_caching = false
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
+  ses_secrets = SecretsManager.get_secret('blog-app/production/ses')
+
+  config.action_mailer.smtp_settings = {
+    address:              'email-smtp.ap-south-1.amazonaws.com',
+    port:                 587, # Standard port for TLS
+    user_name:            ses_secrets['username'],
+    password:             ses_secrets['password'],
+    authentication:       :login,
+    enable_starttls_auto: true
+  }
+
+  # 4. Set the 'from' address to the email you just verified!
+  config.action_mailer.default_options = { from: 'divyanshu.sharma1401@gmail.com' }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

@@ -1,5 +1,7 @@
+require 'sidekiq/web'
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: { registrations: 'users/registrations' }
+  mount Sidekiq::Web => '/sidekiq'
 
   resources :posts do
     resources :comments, only: [:create, :destroy]
