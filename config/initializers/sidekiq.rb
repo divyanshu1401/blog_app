@@ -1,26 +1,32 @@
 if Rails.env.production?
   begin
-    # Fetch the secret you already created
+    # Fetch the secret from AWS Secrets Manager
     secrets = SecretsManager.get_secret('blog-app/production/cache')
     
-    # Ensure 'url' matches the key you used in the AWS Secrets Manager JSON
-    redis_url = secrets['url'] 
+    # We use the clean URL from Secrets Manager
+    base_redis_url = secrets['url'] 
     
-    # Optional: If you use a password or specific DB, 
-    # the URL format is redis://:password@hostname:6379/0
+    # We append the URL-encoded hash tag '%7Bsidekiq%7D' which represents '{sidekiq}'
+    # This ensures ElastiCache groups all keys in one slot while keeping the URI parser happy.
+    redis_url = "#{base_redis_url}/%7Bsidekiq%7D"
+    
+    # SSL/TLS is mandatory for ElastiCache Serverless
+    ssl_options = { verify_mode: OpenSSL::SSL::VERIFY_NONE }
   rescue StandardError => e
     Rails.logger.error "Sidekiq could not fetch Redis URL from Secrets Manager: #{e.message}"
     raise "Sidekiq initialization failed due to missing Redis configuration"
   end
 else
-  # Local development fallback
+  # Local development fallback (usually no SSL/TLS needed)
   redis_url = ENV.fetch("REDIS_URL", "redis://localhost:6379/0")
+  ssl_options = {}
 end
 
+# In Sidekiq 7/8, the 'namespace' parameter is removed.
+# The slot-grouping is now handled via the {sidekiq} tag in the URL above.
 sidekiq_config = { 
   url: redis_url,
-  namespace: "{sidekiq}", 
-  ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+  ssl_params: ssl_options
 }
 
 Sidekiq.configure_server do |config|
