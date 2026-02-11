@@ -1,6 +1,5 @@
 if Rails.env.production?
   begin
-    # Fetch the secret from AWS Secrets Manager
     secrets = SecretsManager.get_secret('blog-app/production/cache')
     
     # We use the clean URL from Secrets Manager
@@ -17,16 +16,15 @@ if Rails.env.production?
     raise "Sidekiq initialization failed due to missing Redis configuration"
   end
 else
-  # Local development fallback (usually no SSL/TLS needed)
   redis_url = ENV.fetch("REDIS_URL", "redis://localhost:6379/0")
-  ssl_options = {}
 end
 
-# In Sidekiq 7/8, the 'namespace' parameter is removed.
-# The slot-grouping is now handled via the {sidekiq} tag in the URL above.
 sidekiq_config = { 
   url: redis_url,
-  ssl_params: ssl_options
+  ssl_params: ssl_options,
+  custom: {
+    tag: "sidekiq"
+  }
 }
 
 Sidekiq.configure_server do |config|
