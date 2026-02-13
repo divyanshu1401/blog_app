@@ -16,10 +16,7 @@ end
 
 sidekiq_config = {
   url: redis_url,
-  ssl_params: ssl_options,
-  custom: {
-    tag: "sidekiq"
-  }
+  ssl_params: ssl_options
 }
 
 Sidekiq.configure_server do |config|
