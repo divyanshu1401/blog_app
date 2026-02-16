@@ -104,7 +104,7 @@ Rails.application.configure do
     port:                 587, # Standard port for TLS
     user_name:            ses_secrets['username'],
     password:             ses_secrets['password'],
-    authentication:       :login,
+    authentication:       :plain,
     enable_starttls_auto: true
   }
 
